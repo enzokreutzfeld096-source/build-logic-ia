@@ -77,7 +77,7 @@ def perguntar():
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
-     payload = {
+      payload = {
         "model": "llama-3.1-8b-instant",
         "messages": [
             {"role": "system", "content": "Responda de forma bem curta e direta, sem acentos, no maximo 120 caracteres."},
