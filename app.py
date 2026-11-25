@@ -70,9 +70,9 @@ def perguntar():
         "Content-Type": "application/json"
     }
     payload = {
-        "model": "llama-3.1-8b-instant",
+        "model": "openai/gpt-oss-20b",
         "messages": [
-            {"role": "system", "content": "Responda de forma bem curta e direta, sem acentos, no maximo 120 caracteres."},
+            {"role": "system", "content": "Responda bem curto, apenas com letras, sem acentos, sem pontuacao e escreva numeros por extenso."},
             {"role": "user", "content": pergunta}
         ]
     }
