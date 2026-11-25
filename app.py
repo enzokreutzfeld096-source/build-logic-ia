@@ -77,7 +77,7 @@ def perguntar():
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
-    payload = {
+     payload = {
         "model": "llama-3.1-8b-instant",
         "messages": [
             {"role": "system", "content": "Responda de forma bem curta e direta, sem acentos, no maximo 120 caracteres."},
@@ -85,16 +85,16 @@ def perguntar():
         ]
     }
 
-    url_groq = "https://api.groq.com/openai/v1/chat/completions"
+     url_groq = "https://api.groq.com/openai/v1/chat/completions"
 
-    try:
+     try:
      r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
      if r.status_code != 200:
          resposta_ia = f"ERRO HTTP {r.status_code}: {r.text[:100]}"
      else:
          dados = r.json()
          resposta_ia = dados["choices"][0]["message"]["content"]
-    except Exception as e:
+     except Exception as e:
      resposta_ia = f"ERRO: {str(e)}"
 
     texto_limpo = limpar_texto_ascii(resposta_ia)
@@ -104,6 +104,6 @@ def perguntar():
 
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
 
-   if __name__ == "__main__":
+    if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
