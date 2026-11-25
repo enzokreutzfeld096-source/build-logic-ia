@@ -2,7 +2,7 @@ import os
 import requests
 from flask import Flask, request, render_template_string, jsonify
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
@@ -48,19 +48,11 @@ def limpar_texto_ascii(texto):
 @app.route("/", methods=["GET", "POST"])
 def home():
     global indice_atual, ultimo_texto
-    # Se for o Roblox / Build Logic chamando (POST com JSON ou User-Agent Roblox):
     if request.method == "POST" or "Roblox" in request.headers.get("User-Agent", ""):
-        dados_recebidos = request.get_json(silent=True) or {}
-        print("Recebido do Build Logic:", dados_recebidos, flush=True)
-
         if not fila_letras:
             return jsonify({"value": "0000000000000000"})
 
         char_code = fila_letras.pop(0)
-
-        # Monta uma string binaria pura de 16 bits (8 bits da letra + pino 9 de Clock = 1)
-        # 7 bits ASCII (da esquerda para a direita) + pino 8 de Clock = 1
-        # 7 bits invertidos (LSB -> MSB) para bater com a esquerda->direita do display
         codigo = 0 if char_code == 32 else (char_code & 0x7F)
         bits_7 = format(codigo, "07b")[::-1]
         resposta_binaria = (bits_7 + "100000000")[::-1]
@@ -77,25 +69,24 @@ def perguntar():
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
-      payload = {
+    payload = {
         "model": "llama-3.1-8b-instant",
         "messages": [
             {"role": "system", "content": "Responda de forma bem curta e direta, sem acentos, no maximo 120 caracteres."},
             {"role": "user", "content": pergunta}
         ]
-     }
+    }
+    url_groq = "https://groq.com"
 
-     url_groq = "https://api.groq.com/openai/v1/chat/completions"
-
-     try:
-     r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
-     if r.status_code != 200:
-         resposta_ia = f"ERRO HTTP {r.status_code}: {r.text[:100]}"
-     else:
-         dados = r.json()
-         resposta_ia = dados["choices"][0]["message"]["content"]
-     except Exception as e:
-     resposta_ia = f"ERRO: {str(e)}"
+    try:
+        r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
+        if r.status_code != 200:
+            resposta_ia = f"ERRO HTTP {r.status_code}: {r.text[:100]}"
+        else:
+            dados = r.json()
+            resposta_ia = dados["choices"]["message"]["content"]
+    except Exception as e:
+        resposta_ia = f"ERRO: {str(e)}"
 
     texto_limpo = limpar_texto_ascii(resposta_ia)
     ultimo_texto = texto_limpo
@@ -104,6 +95,6 @@ def perguntar():
 
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
 
-    if __name__ == "__main__":
+if _name_ == "_main_":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
