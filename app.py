@@ -94,7 +94,7 @@ def perguntar():
      else:
          dados = r.json()
          resposta_ia = dados["choices"][0]["message"]["content"]
-     except Exception as e:
+    except Exception as e:
      resposta_ia = f"ERRO: {str(e)}"
 
     texto_limpo = limpar_texto_ascii(resposta_ia)
@@ -104,6 +104,6 @@ def perguntar():
 
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
 
-if __name__ == "__main__":
+   if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
