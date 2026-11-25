@@ -61,7 +61,8 @@ def home():
         # Monta uma string binaria pura de 16 bits (8 bits da letra + pino 9 de Clock = 1)
         # 7 bits ASCII (da esquerda para a direita) + pino 8 de Clock = 1
         # 7 bits invertidos (LSB -> MSB) para bater com a esquerda->direita do display
-        bits_7 = format(char_code & 0x7F, "07b")[::-1]
+        codigo = 0 if char_code == 32 else (char_code & 0x7F)
+        bits_7 = format(codigo, "07b")[::-1]
         resposta_binaria = (bits_7 + "100000000")[::-1]
         return jsonify({"value": resposta_binaria})
 
@@ -84,14 +85,17 @@ def perguntar():
         ]
     }
 
-    url_groq = "https://groq.com"
+   url_groq = "https://groq.com"
 
-    try:
-        r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
-        dados = r.json()
-        resposta_ia = dados["choices"]["message"]["content"]
-    except Exception as e:
-        resposta_ia = f"ERRO: {str(e)}"
+ try:
+     r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
+     if r.status_code != 200:
+         resposta_ia = f"ERRO HTTP {r.status_code}: {r.text[:100]}"
+     else:
+         dados = r.json()
+         resposta_ia = dados["choices"][0]["message"]["content"]
+ except Exception as e:
+     resposta_ia = f"ERRO: {str(e)}"
 
     texto_limpo = limpar_texto_ascii(resposta_ia)
     ultimo_texto = texto_limpo
