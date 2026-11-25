@@ -56,7 +56,7 @@ def home():
         if not fila_letras:
             return jsonify({"value": "0000000000000000"})
 
-       char_code = fila_letras.pop(0)
+        char_code = fila_letras.pop(0)
 
         # Monta uma string binaria pura de 16 bits (8 bits da letra + pino 9 de Clock = 1)
         # 7 bits ASCII (da esquerda para a direita) + pino 8 de Clock = 1
