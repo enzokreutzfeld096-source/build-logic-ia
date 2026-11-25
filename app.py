@@ -76,7 +76,7 @@ def perguntar():
             {"role": "user", "content": pergunta}
         ]
     }
-    url_groq = "https://groq.com"
+    url_groq = "https://api.groq.com/openai/v1/chat/completions"
 
     try:
         r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
