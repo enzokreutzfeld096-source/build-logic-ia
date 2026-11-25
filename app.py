@@ -83,7 +83,7 @@ def perguntar():
             {"role": "system", "content": "Responda de forma bem curta e direta, sem acentos, no maximo 120 caracteres."},
             {"role": "user", "content": pergunta}
         ]
-    }
+     }
 
      url_groq = "https://api.groq.com/openai/v1/chat/completions"
 
