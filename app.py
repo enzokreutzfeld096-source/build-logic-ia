@@ -85,7 +85,7 @@ def perguntar():
         ]
     }
 
-   url_groq = "https://groq.com"
+    url_groq = "https://groq.com"
 
  try:
      r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
