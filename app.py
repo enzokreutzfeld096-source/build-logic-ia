@@ -60,8 +60,10 @@ def home():
         indice_atual = (indice_atual + 1) % len(fila_letras)
 
         # Monta uma string binaria pura de 16 bits (8 bits da letra + pino 9 de Clock = 1)
-        bits = "".join(str((char_code >> i) & 1) for i in range(8))
-        resposta_binaria = bits + "10000000"
+       # 7 bits ASCII (da esquerda para a direita) + pino 8 de Clock = 1
+        bits_7 = format(char_code & 0x7F, "07b")
+        # Como o Build Logic usa string.reverse(), invertemos aqui para Saida 1..7 ficarem na ordem certa:
+        resposta_binaria = (bits_7 + "100000000")[::-1]
         return jsonify({"value": resposta_binaria})
 
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
@@ -83,7 +85,7 @@ def perguntar():
         ]
     }
 
-    url_groq = "https://" + "://groq.com"
+    url_groq = "https://groq.com"
 
     try:
         r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
