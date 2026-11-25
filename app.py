@@ -1,8 +1,8 @@
 import os
 import requests
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, render_template_string
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
@@ -48,18 +48,21 @@ def limpar_texto_ascii(texto):
 @app.route("/", methods=["GET", "POST"])
 def home():
     global indice_atual, ultimo_texto
-    if request.headers.get("User-Agent", "").startswith("Roblox") or request.args.get("bl") == "1":
+    # Se for o Roblox / Build Logic chamando (POST com JSON ou User-Agent Roblox):
+    if request.method == "POST" or "Roblox" in request.headers.get("User-Agent", ""):
+        dados_recebidos = request.get_json(silent=True) or {}
+        print("Recebido do Build Logic:", dados_recebidos, flush=True)
+
         if not fila_letras:
-            return jsonify({"output": [0] * 16})
-        
+            return "0000000000000000"
+
         char_code = fila_letras[indice_atual]
         indice_atual = (indice_atual + 1) % len(fila_letras)
-        
-        bits = [(char_code >> i) & 1 for i in range(8)]
-        bits.append(1)
-        while len(bits) < 16:
-            bits.append(0)
-        return jsonify({"output": bits})
+
+        # Monta uma string binaria pura de 16 bits (8 bits da letra + pino 9 de Clock = 1)
+        bits = "".join(str((char_code >> i) & 1) for i in range(8))
+        resposta_binaria = bits + "10000000"
+        return resposta_binaria
 
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
 
@@ -67,7 +70,7 @@ def home():
 def perguntar():
     global fila_letras, indice_atual, ultimo_texto
     pergunta = request.form.get("pergunta", "")
-    
+
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
@@ -79,14 +82,13 @@ def perguntar():
             {"role": "user", "content": pergunta}
         ]
     }
-    
-    url_groq = "https://api.groq.com/openai/v1/chat/completions"
 
-    
+    url_groq = "https://" + "://groq.com"
+
     try:
         r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
         dados = r.json()
-        resposta_ia = dados["choices"][0]["message"]["content"]
+        resposta_ia = dados["choices"]["message"]["content"]
     except Exception as e:
         resposta_ia = f"ERRO: {str(e)}"
 
@@ -94,9 +96,9 @@ def perguntar():
     ultimo_texto = texto_limpo
     fila_letras = [ord(c) for c in texto_limpo]
     indice_atual = 0
-    
+
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
