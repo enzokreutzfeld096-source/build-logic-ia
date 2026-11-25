@@ -60,11 +60,10 @@ def home():
         indice_atual = (indice_atual + 1) % len(fila_letras)
 
         # Monta uma string binaria pura de 16 bits (8 bits da letra + pino 9 de Clock = 1)
-       # 7 bits ASCII (da esquerda para a direita) + pino 8 de Clock = 1
-       # 7 bits invertidos (LSB -> MSB) para bater com a esquerda->direita do display
-     bits_7 = format(char_code & 0x7F, "07b")[::-1]
-     resposta_binaria = (bits_7 + "100000000")[::-1]
-     return jsonify({"value": resposta_binaria})
+        # 7 bits ASCII (da esquerda para a direita) + pino 8 de Clock = 1
+        # 7 bits invertidos (LSB -> MSB) para bater com a esquerda->direita do display
+        bits_7 = format(char_code & 0x7F, "07b")[::-1]
+        resposta_binaria = (bits_7 + "100000000")[::-1]
         return jsonify({"value": resposta_binaria})
 
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
