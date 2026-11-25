@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, jsonify
 
 app = Flask(__name__)
 
@@ -54,7 +54,7 @@ def home():
         print("Recebido do Build Logic:", dados_recebidos, flush=True)
 
         if not fila_letras:
-            return "0000000000000000"
+            return jsonify({"value": "0000000000000000"})
 
         char_code = fila_letras[indice_atual]
         indice_atual = (indice_atual + 1) % len(fila_letras)
@@ -62,7 +62,7 @@ def home():
         # Monta uma string binaria pura de 16 bits (8 bits da letra + pino 9 de Clock = 1)
         bits = "".join(str((char_code >> i) & 1) for i in range(8))
         resposta_binaria = bits + "10000000"
-        return resposta_binaria
+        return jsonify({"value": resposta_binaria})
 
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
 
