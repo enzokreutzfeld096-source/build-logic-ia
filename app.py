@@ -85,16 +85,16 @@ def perguntar():
         ]
     }
 
-    url_groq = "https://groq.com"
+    url_groq = "https://api.groq.com/openai/v1/chat/completions"
 
- try:
+    try:
      r = requests.post(url_groq, headers=headers, json=payload, timeout=10)
      if r.status_code != 200:
          resposta_ia = f"ERRO HTTP {r.status_code}: {r.text[:100]}"
      else:
          dados = r.json()
          resposta_ia = dados["choices"][0]["message"]["content"]
- except Exception as e:
+     except Exception as e:
      resposta_ia = f"ERRO: {str(e)}"
 
     texto_limpo = limpar_texto_ascii(resposta_ia)
