@@ -84,7 +84,7 @@ def perguntar():
             resposta_ia = f"ERRO HTTP {r.status_code}: {r.text[:100]}"
         else:
             dados = r.json()
-            resposta_ia = dados["choices"]["message"]["content"]
+            resposta_ia = dados["choices"][0]["message"]["content"]
     except Exception as e:
         resposta_ia = f"ERRO: {str(e)}"
 
