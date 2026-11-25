@@ -2,7 +2,7 @@ import os
 import requests
 from flask import Flask, request, jsonify, render_template_string
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
@@ -97,6 +97,6 @@ def perguntar():
     
     return render_template_string(HTML_PAGE, resposta=ultimo_texto)
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
